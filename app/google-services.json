@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "275604552436",
+    "firebase_url": "https://busguidingsystem.firebaseio.com",
+    "project_id": "busguidingsystem",
+    "storage_bucket": "busguidingsystem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275604552436:android:9cfa62e690c71a80",
+        "android_client_info": {
+          "package_name": "com.uok.se.busguidingsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275604552436-7mpfmmj4pvbm6fopo7vp8a5sk62r3isl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uok.se.busguidingsystem",
+            "certificate_hash": "b117c7506879410d5d8321d9fa9c162cfa3d2570"
+          }
+        },
+        {
+          "client_id": "275604552436-rvde6vmevbmef6q8sd1999n6tk9q81he.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZBHide7NyE1y6mxuOWqSpiTQIFu3v38I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275604552436-rvde6vmevbmef6q8sd1999n6tk9q81he.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
