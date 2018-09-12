@@ -36,8 +36,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -64,6 +67,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setLocationListener();
             createLocationRequest();
         }
+    }
+
+    private void setDataChangeListener() {
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                com.uok.se.busguidingsystem.Location location = dataSnapshot.getValue(com.uok.se.busguidingsystem.Location.class);
+                if(location.getEmail()!=null&&location.getLat()!=null&&location.getLng()!=null){
+                    displayLocation(location);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                return;
+            }
+        };
+        dbRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(postListener);
+    }
+
+    private void displayLocation(com.uok.se.busguidingsystem.Location location) {
+        LatLng myMarker = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
+        mMap.addMarker(new MarkerOptions().position(myMarker)
+                .title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myMarker));
     }
 
     private void setLocationListener() {
@@ -106,6 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap=googleMap;
+        setDataChangeListener();
     }
 
     @Override
