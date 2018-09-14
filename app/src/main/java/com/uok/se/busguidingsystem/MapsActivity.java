@@ -43,6 +43,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -52,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference dbRef;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
-    private Marker marker;
+    private Map<String, Marker> Markers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Markers = new HashMap<String, Marker>();
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference("Locations");
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -75,10 +79,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                com.uok.se.busguidingsystem.Location location = dataSnapshot.getValue(com.uok.se.busguidingsystem.Location.class);
-                if(location.getEmail()!=null&&location.getLat()!=null&&location.getLng()!=null){
+                Map<String, com.uok.se.busguidingsystem.Location> liveUsers = (Map<String, com.uok.se.busguidingsystem.Location>) dataSnapshot.getValue();
+                for(Map.Entry<String, com.uok.se.busguidingsystem.Location> user : liveUsers.entrySet()){
+                    Map<String,String> locationDeatails = (Map<String,String>) user.getValue();
+                    com.uok.se.busguidingsystem.Location location = new com.uok.se.busguidingsystem.Location();
+                    for(String key: locationDeatails.keySet()){
+                        location.setEmail(locationDeatails.get("email"));
+                        location.setLat(locationDeatails.get("lat"));
+                        location.setLng(locationDeatails.get("lng"));
+                    }
                     displayLocation(location);
                 }
+
+
+                //for(String key: liveUsers.keySet()){
+                   // com.uok.se.busguidingsystem.Location location = new com.uok.se.busguidingsystem.Location(
+                   //         liveUsers.get(key).getEmail(),
+                   //         liveUsers.gt
+                   // )
+                   //displayLocation(key,location);
+                //}
             }
 
             @Override
@@ -86,18 +106,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
         };
-        dbRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(postListener);
+        //dbRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(postListener);
+        dbRef.addValueEventListener(postListener);
     }
 
     private void displayLocation(com.uok.se.busguidingsystem.Location location) {
-        if(marker!=null)
+        Marker currentMarker = Markers.get(location.getEmail());
+        if(currentMarker!=null)
         {
-            marker.remove();
+            currentMarker.remove();
         }
         LatLng myMarker = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
-        marker = mMap.addMarker(new MarkerOptions().position(myMarker)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myMarker));
+        Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
+                .title(location.getEmail()));
+        if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker,15.0f));
+        }
+        Markers.put(location.getEmail(),marker);
     }
 
     private void setLocationListener() {
