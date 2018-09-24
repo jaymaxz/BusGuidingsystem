@@ -90,15 +90,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     displayLocation(location);
                 }
-
-
-                //for(String key: liveUsers.keySet()){
-                   // com.uok.se.busguidingsystem.Location location = new com.uok.se.busguidingsystem.Location(
-                   //         liveUsers.get(key).getEmail(),
-                   //         liveUsers.gt
-                   // )
-                   //displayLocation(key,location);
-                //}
             }
 
             @Override
@@ -283,5 +274,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }

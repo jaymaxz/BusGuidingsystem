@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.uok.se.busguidingsystem.MainActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="339dp"
+        android:layout_height="338dp"
+        app:srcCompat="@android:drawable/ic_lock_lock"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="114dp" />
 </android.support.constraint.ConstraintLayout>

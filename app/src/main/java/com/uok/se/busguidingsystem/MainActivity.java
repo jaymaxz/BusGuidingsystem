@@ -45,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Intent map = new Intent(MainActivity.this,  MapsActivity.class);
-                startActivity(map);
+                //Intent map = new Intent(MainActivity.this,  MapsActivity.class);
+                //startActivity(map);
+                Intent enterAs = new Intent(MainActivity.this, EnterAs.class);
+                startActivity(enterAs);
                 finish();
                 // ...
             } else {
@@ -54,7 +56,20 @@ public class MainActivity extends AppCompatActivity {
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                return;
+                //return;
+                // Choose authentication providers
+                List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().build(),
+                        new AuthUI.IdpConfig.GoogleBuilder().build());
+
+                // Create and launch sign-in intent
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .setTheme(R.style.AppTheme)
+                                .build(),
+                        RC_SIGN_IN);
             }
         }
     }
