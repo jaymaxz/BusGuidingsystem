@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     tools:context="com.uok.se.busguidingsystem.EnterAs">
 
-    <Button
-        android:id="@+id/btnDriver"
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView4"
+        android:layout_above="@+id/btnDriver"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/main" />
+
+    <Button
+
+        android:id="@+id/btnDriver"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnPessenger"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
         android:text="Driver/Conductor" />
 
     <TextView
@@ -36,29 +45,30 @@
 
     <Button
         android:id="@+id/btnPessenger"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnDriver"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Passenger" />
+        android:layout_above="@+id/btnOwner"
+        android:layout_alignStart="@+id/btnDriver"
+        android:text="        Passenger        " />
 
     <Button
         android:id="@+id/btnOwner"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnPessenger"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Owner" />
+        android:layout_above="@+id/btnOther"
+        android:layout_alignStart="@+id/btnPessenger"
+        android:text="            Owner             " />
 
     <Button
         android:id="@+id/btnOther"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/btnOwner"
-        android:layout_below="@+id/btnOwner"
-        android:layout_marginTop="16dp"
-        android:text="Other" />
+        android:layout_marginBottom="30dp"
+        android:text="            Other              " />
 
 </RelativeLayout>

@@ -10,7 +10,7 @@
         android:id="@+id/imageView"
         android:layout_width="339dp"
         android:layout_height="338dp"
-        app:srcCompat="@android:drawable/ic_lock_lock"
+        app:srcCompat="@drawable/main"
         tools:layout_editor_absoluteX="23dp"
         tools:layout_editor_absoluteY="114dp" />
 </android.support.constraint.ConstraintLayout>

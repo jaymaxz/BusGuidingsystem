@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 //return;
                 // Choose authentication providers
                 List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.PhoneBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
                         new AuthUI.IdpConfig.GoogleBuilder().build());
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                                 .createSignInIntentBuilder()
                                 .setAvailableProviders(providers)
                                 .setTheme(R.style.AppTheme)
+                                .setLogo(R.drawable.main)
                                 .build(),
                         RC_SIGN_IN);
             }
