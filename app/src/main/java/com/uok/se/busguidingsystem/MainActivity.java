@@ -22,17 +22,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
         // Create and launch sign-in intent
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .setTheme(R.style.AppTheme)
-                                .build(),
-                        RC_SIGN_IN);
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .setTheme(R.style.AppTheme)
+                        .setLogo(R.drawable.main)
+                        .build(),
+                RC_SIGN_IN);
     }
 
     @Override

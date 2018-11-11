@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -30,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -56,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private Map<String, Marker> Markers;
+    private boolean TrackMe = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +83,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setLocationListener();
             createLocationRequest();
         }
+        Switch mySwitch = (Switch)findViewById(R.id.switchTrackMe);
+        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b)
+                {
+                    TrackMe = true;
+                }
+                else
+                {
+                    TrackMe = false;
+                }
+            }
+        });
     }
 
     private void setDataChangeListener() {
@@ -108,12 +132,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentMarker.remove();
         }
         LatLng myMarker = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
-        Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
-                .title(location.getEmail()));
-        if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker,15.0f));
+        if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()) {
+            Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
+                    .title(location.getEmail()).snippet(location.getLng()+"\n"+location.getLat())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_bus)));
+            if(TrackMe){
+                marker.showInfoWindow();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker,16.0f));
+            }
+            Markers.put(location.getEmail(),marker);
         }
-        Markers.put(location.getEmail(),marker);
+        else
+        {
+            Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
+                    .title(location.getEmail()).snippet(location.getLng()+"\n"+location.getLat())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus)));
+            Markers.put(location.getEmail(),marker);
+        }
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Context mContext = getApplicationContext();
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+                info.addView(title);
+                info.addView(snippet);
+                return info;
+            }
+        });
     }
 
     private void setLocationListener() {

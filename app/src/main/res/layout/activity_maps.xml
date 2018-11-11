@@ -14,6 +14,7 @@
         android:id="@+id/switchTrackMe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Track me" />
+        android:text="Track me"
+        android:checked="true"/>
 </FrameLayout>
 
