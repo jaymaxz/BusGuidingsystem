@@ -52,6 +52,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,29 +127,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void displayLocation(com.uok.se.busguidingsystem.Location location) {
-        Marker currentMarker = Markers.get(location.getEmail());
-        if(currentMarker!=null)
-        {
-            currentMarker.remove();
-        }
-        LatLng myMarker = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
-        if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()) {
-            Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
-                    .title(location.getEmail()).snippet(location.getLng()+"\n"+location.getLat())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_bus)));
-            if(TrackMe){
-                marker.showInfoWindow();
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker,16.0f));
-            }
-            Markers.put(location.getEmail(),marker);
-        }
-        else
-        {
-            Marker marker = mMap.addMarker(new MarkerOptions().position(myMarker)
-                    .title(location.getEmail()).snippet(location.getLng()+"\n"+location.getLat())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus)));
-            Markers.put(location.getEmail(),marker);
-        }
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
@@ -174,6 +152,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return info;
             }
         });
+        DecimalFormat df = new DecimalFormat("#.###");
+        Location oldLocation = new Location("");
+        Location newLocation = new Location("");
+        Marker currentMarker = Markers.get(location.getEmail());
+        if(currentMarker!=null)
+        {
+            oldLocation.setLongitude(currentMarker.getPosition().longitude);
+            oldLocation.setLatitude(currentMarker.getPosition().latitude);
+            currentMarker.remove();
+        }
+        LatLng latLng = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
+        newLocation.setLatitude(Double.parseDouble(location.getLat()));
+        newLocation.setLongitude(Double.parseDouble(location.getLng()));
+        float speed = oldLocation.distanceTo(newLocation)/3600;
+        if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()) {
+            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
+                    .title(location.getEmail()).snippet("Distance: 0Km"+"\n"+"Speed: "+df.format(speed)+"KmpH")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_bus)));
+            if(TrackMe){
+                marker.showInfoWindow();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,16.0f));
+            }
+            Markers.put(location.getEmail(),marker);
+        }
+        else
+        {
+            Marker mynMarker = (Marker) Markers.get(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            Location myLocation = new Location("");
+            myLocation.setLongitude(mynMarker.getPosition().longitude);
+            myLocation.setLatitude(mynMarker.getPosition().latitude);
+            Location hisLocation = new Location("");
+            hisLocation.setLongitude(latLng.longitude);
+            hisLocation.setLatitude(latLng.latitude);
+            float distance = hisLocation.distanceTo(myLocation);
+            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
+                    .title(location.getEmail()).snippet("Distance: "+df.format(distance/1000)+"Km"+"\n"+"Speed: "+df.format(speed)+"KmpH")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus)));
+            Markers.put(location.getEmail(),marker);
+        }
+
+
     }
 
     private void setLocationListener() {
