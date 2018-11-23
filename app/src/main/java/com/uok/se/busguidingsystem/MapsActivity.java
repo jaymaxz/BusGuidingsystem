@@ -165,10 +165,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng( Double.parseDouble(location.getLat()), Double.parseDouble(location.getLng()));
         newLocation.setLatitude(Double.parseDouble(location.getLat()));
         newLocation.setLongitude(Double.parseDouble(location.getLng()));
-        float speed = oldLocation.distanceTo(newLocation)/3600;
+        float speed = oldLocation.distanceTo(newLocation)*(3.6f/4);
         if(location.getEmail()==FirebaseAuth.getInstance().getCurrentUser().getEmail()) {
             Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
-                    .title(location.getEmail()).snippet("Distance: 0Km"+"\n"+"Speed: "+df.format(speed)+"KmpH")
+                    .title(location.getEmail()).snippet("Speed: "+df.format(speed)+"KmpH"+"\n"+"")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_bus)));
             if(TrackMe){
                 marker.showInfoWindow();
